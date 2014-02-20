@@ -12,13 +12,13 @@ import java.util.Iterator;
 import java.util.Random;
 
 @RunWith(JUnit4.class)
-public class TestBinaryTreeSet {
-	private BinaryTreeSet<Integer> treeSet;
-	private BinaryTreeSet<String> stringSet;
+public class TestTreapSet {
+	private TreapSet<Integer> treeSet;
+	private TreapSet<String> stringSet;
 	@Before
 	public void setUp() {
-		treeSet = new BinaryTreeSet<Integer>(false);
-		stringSet = new BinaryTreeSet<String>();
+		treeSet = new TreapSet<Integer>();
+		stringSet = new TreapSet<String>();
 	}
 
 	@After
@@ -48,20 +48,20 @@ public class TestBinaryTreeSet {
 		treeSet.add(2);
 		treeSet.add(null);
 		assertEquals(11, treeSet.size());
-		assertEquals(true, TestBinaryTreeSet.assertOrder(treeSet));
+		assertEquals(true, TestTreapSet.assertOrder(treeSet));
 	}
 
 	@Test
 	public void testAddRandom() {
 		Random random = new Random();
-		for(int i = 100; i < 10000; i += random.nextInt(40)) {
-			int count = random.nextInt(1000);
-			BinaryTreeSet<Integer> randomSet = new BinaryTreeSet<Integer>();
+		for(int i = 100; i < 1000; i += random.nextInt(40)) {
+			int count = random.nextInt(10);
+			TreapSet<Integer> randomSet = new TreapSet<Integer>();
 			for(int j = 0; j < count; j++) {
 				int value = random.nextInt();
 				randomSet.add(value);
 			}
-			assertEquals(true, TestBinaryTreeSet.assertOrder(randomSet));
+			assertEquals(true, TestTreapSet.assertOrder(randomSet));
 		}
 	}
 
@@ -69,23 +69,31 @@ public class TestBinaryTreeSet {
 	public void testRemoveRandom() {
 		Random random = new Random();
 		for(int i = 100; i < 10000; i += random.nextInt(40)) {
-			int count = random.nextInt(1000);
-			BinaryTreeSet<Integer> randomSet = new BinaryTreeSet<Integer>();
+			int count = random.nextInt(10);
+			TreapSet<Integer> randomSet = new TreapSet<Integer>();
 			for(int j = 0; j < count; j++) {
 				int value = random.nextInt();
 				randomSet.add(value);
 			}
 			int index = random.nextInt(count+1);
 			int currentIndex = 0;
-			
+			int val = 0;
+			String beforeRemove = randomSet.toString();
 			for(int value: randomSet) {
 				if(currentIndex == index) {
+					val = value;
 					randomSet.remove(value);
 					break;
 				}
 				currentIndex++;
 			}
-			assertEquals(true, TestBinaryTreeSet.assertOrder(randomSet));
+			boolean inOrder = TestTreapSet.assertOrder(randomSet);
+			if(!inOrder) {
+				System.out.println(beforeRemove);
+				System.out.println("Removed "+val);
+				System.out.println(randomSet);
+			}
+			assertEquals(true, inOrder);
 		}
 	}
 
@@ -115,7 +123,7 @@ public class TestBinaryTreeSet {
 	}
 
 
-	private static <T extends Comparable<T>> boolean assertOrder(BinaryTreeSet<T> set) {
+	private static <T extends Comparable<T>> boolean assertOrder(TreapSet<T> set) {
 		Iterator<T> it = set.iterator();
 		T a = null;
 		T b;
